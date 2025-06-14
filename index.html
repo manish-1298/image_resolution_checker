@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Grid with Resolution + ZIP Download</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .file-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .file-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #downloadZipBtn {
+      padding: 8px 16px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .image-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fafafa;
+      text-align: center;
+      padding: 10px;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-card img {
+      max-width: 100%;
+      max-height: 150px;
+      object-fit: contain;
+      margin-bottom: 8px;
+    }
+
+    .resolution {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+
+    .modal h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    .modal p {
+      margin: 0 0 15px;
+      font-size: 16px;
+    }
+
+    .modal button {
+      background-color: #007bff;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .modal .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 18px;
+      color: #666;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Image Resolution Viewer</h2>
+
+  <div class="file-info">
+    <div class="file-left">
+      <input type="file" id="imageInput" multiple accept="image/*">
+    </div>
+    <button id="downloadZipBtn">Download Renamed Images
+    </button>
+  </div>
+
+  <div class="grid" id="imageGrid"></div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="close-btn" onclick="closeModal()">✖</button>
+      <h3>Image Size Warning</h3>
+      <p id="modalText"></p>
+      <button onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <!-- JSZip CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+
+  <script>
+    const input = document.getElementById('imageInput');
+    const grid = document.getElementById('imageGrid');
+    const downloadButton = document.getElementById('downloadZipBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalText = document.getElementById('modalText');
+
+    function showModal(message) {
+      modalText.textContent = message;
+      modalOverlay.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modalOverlay.style.display = 'none';
+    }
+
+    input.addEventListener('change', (event) => {
+      grid.innerHTML = '';
+      const files = [...event.target.files];
+
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+      const sortedFiles = files.sort((a, b) => collator.compare(a.name, b.name));
+
+      let smallImageCount = 0;
+
+      const promises = sortedFiles.map(file => {
+        return new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+              const isTooSmall = img.width < 380 || img.height < 380;
+              if (isTooSmall) smallImageCount++;
+              resolve({ file, src: e.target.result, width: img.width, height: img.height, isTooSmall });
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      Promise.all(promises).then(images => {
+        images.forEach(({ file, src, width, height, isTooSmall }) => {
+          const card = document.createElement('div');
+          card.className = 'image-card';
+
+          const imageElement = document.createElement('img');
+          imageElement.src = src;
+
+          const resolution = document.createElement('div');
+          resolution.className = 'resolution';
+          resolution.innerHTML = `${file.name}<br><strong style="color:${isTooSmall ? 'red' : '#333'}">${width} × ${height}px</strong>`;
+
+          card.appendChild(imageElement);
+          card.appendChild(resolution);
+          grid.appendChild(card);
+        });
+
+        if (smallImageCount > 0) {
+          showModal(`⚠️ ${smallImageCount} image${smallImageCount > 1 ? 's are' : ' is'} smaller than 380×380 pixels.`);
+        }
+      });
+    });
+
+    downloadButton.addEventListener('click', () => {
+      const files = [...input.files];
+      if (!files.length) {
+        alert('No images uploaded.');
+        return;
+      }
+
+      const zip = new JSZip();
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+      const sortedFiles = files.sort((a, b) => collator.compare(a.name, b.name));
+
+      const readFileAsArrayBuffer = (file) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve({ buffer: e.target.result });
+          reader.readAsArrayBuffer(file);
+        });
+      };
+
+      Promise.all(sortedFiles.map(readFileAsArrayBuffer)).then(buffers => {
+        buffers.forEach(({ buffer }, i) => {
+          const fileName = `${i + 1}`; // No extension
+          zip.file(fileName, buffer);
+        });
+
+        zip.generateAsync({ type: "blob" }).then(content => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(content);
+          link.download = "images_renamed.zip";
+          link.click();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
