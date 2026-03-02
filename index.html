@@ -6,299 +6,275 @@
 <style>
 body { font-family: Arial, sans-serif; margin:0; background:#f5f7fa; }
 
-/* Sticky header */
 .header { position: sticky; top:0; background:#f5f7fa; padding:30px 20px; text-align:center; transition: all 0.3s ease; z-index:1000; }
 .header.shrink { padding:10px 20px; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
-h1 { margin:0 0 20px; font-weight:600; transition:0.3s; }
-.header.shrink h1 { font-size:18px; margin-bottom:10px; }
 
-/* Drop Area */
 .drop-area { border:2px dashed #007bff; border-radius:12px; padding:35px; background:white; cursor:pointer; transition:all 0.3s; max-width:400px; margin:auto; }
 .drop-area.dragover { background:#e9f0f5; }
-.drop-area p { margin:0; font-weight:600; }
-.drop-area span { font-size:13px; color:#666; }
 
-/* Download button float right */
-#downloadZipBtn { display:none; position:absolute; top:50%; right:20px; transform:translateY(-50%);
-  padding:10px 18px; font-size:14px; font-weight:bold; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer; }
-#downloadZipBtn:disabled { background:#6c757d; }
-
-/* Resolution Input */
-.resolution-settings { margin-top:10px; display:flex; justify-content:center; align-items:center; gap:6px; font-size:14px; }
-.resolution-settings input { width:55px; padding:3px; font-size:12px; text-align:center; }
-
-/* Counter */
-.image-counter { margin-top:10px; font-size:13px; text-align:center; font-weight:500; }
-.image-counter span.total { font-weight:700; color:#007bff; }
-.image-counter span.small { font-weight:700; color:#d9534f; }
-#fixAllBtn { margin-left:10px; padding:3px 6px; font-size:12px; border:none; border-radius:4px; background:#28a745; color:white; cursor:pointer; }
-#fixAllBtn:disabled { background:#6c757d; cursor:not-allowed; }
-
-/* Progress */
-.progress-container { width:250px; height:14px; background:#ddd; border-radius:8px; overflow:hidden; margin:8px auto; display:none; }
-.progress-bar { height:100%; width:0%; background:#007bff; transition:width 0.2s; }
-.progress-text { font-size:13px; text-align:center; }
-
-/* Grid */
-.container { max-width:1000px; margin:auto; padding:20px; }
-.grid { margin-top:20px; display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:15px; }
-.image-card { background:white; padding:10px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.08); text-align:center; position:relative; transition:background 0.2s; }
-.image-card img { max-width:100%; max-height:130px; object-fit:contain; }
-.image-name { font-size:10px; color:#999; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.image-info { margin-top:3px; font-size:12px; font-weight:500; }
-
-/* Move to End Button on hover */
-.move-end-btn {
-  position: absolute;
-  top:5px;
-  right:5px;
-  background: rgba(0,123,255,0.8);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 2px 5px;
-  font-size: 10px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s;
+#downloadZipBtn {
+  display:none;
+  position:absolute;
+  top:50%;
+  right:20px;
+  transform:translateY(-50%);
+  padding:10px 18px;
+  font-size:14px;
+  font-weight:bold;
+  background:#007bff;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
 }
-.image-card:hover .move-end-btn { opacity: 1; }
 
-/* Dragging visual */
-.image-card.dragging { opacity:0.5; }
-.image-card.dragging-over { background: #f0f0f0; border: 2px dashed #007bff; }
+.resolution-settings { margin-top:10px; display:flex; justify-content:center; align-items:center; gap:6px; font-size:14px; }
 
-/* Modal */
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:2000; }
-.modal { background:white; padding:20px 25px; border-radius:10px; text-align:center; max-width:320px; }
-.modal button { margin-top:10px; padding:6px 12px; border:none; background:#007bff; color:white; border-radius:6px; cursor:pointer; }
+.image-counter { margin-top:10px; font-size:13px; text-align:center; }
 
-/* Back To Top */
-#backToTop { position:fixed; bottom:25px; right:25px; width:90px; height:75px; background:none; border:none; cursor:pointer; display:none; text-align:center; font-family:Arial,sans-serif; z-index:10000; user-select:none; padding:0 8px; box-sizing:border-box; }
-#backToTop .arrow { display:block; margin:0 auto; width:50px; height:40px; line-height:40px; background:#2196F3; color:white; font-size:30px; font-weight:900; border-radius:50%; box-shadow:none; text-shadow:none; }
-#backToTop .text { display:block; margin-top:6px; font-size:12px; font-weight:700; color:#2196F3; text-transform:uppercase; white-space:nowrap; }
+#fixAllBtn {
+  margin-left:10px;
+  padding:3px 6px;
+  font-size:12px;
+  border:none;
+  border-radius:4px;
+  background:#28a745;
+  color:white;
+  cursor:pointer;
+}
 
-/* Responsive */
-@media (max-width:500px){ #downloadZipBtn{position:static;margin-top:12px;transform:none;} #backToTop{width:70px;height:60px;} #backToTop .arrow{width:40px;height:35px;line-height:35px;font-size:24px;} #backToTop .text{font-size:10px;} }
+.progress-container {
+  width:250px;
+  height:14px;
+  background:#ddd;
+  border-radius:8px;
+  overflow:hidden;
+  margin:8px auto;
+  display:none;
+}
+
+.progress-bar {
+  height:100%;
+  width:0%;
+  background:#007bff;
+}
+
+.container { max-width:1000px; margin:auto; padding:20px; }
+
+.grid {
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(160px,1fr));
+  gap:15px;
+}
+
+.image-card {
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  text-align:center;
+}
+
+.image-card img {
+  max-width:100%;
+  max-height:130px;
+  object-fit:contain;
+}
+
+.image-name {
+  font-size:10px;
+  color:#999;
+  margin-top:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.image-info {
+  margin-top:3px;
+  font-size:12px;
+  font-weight:500;
+}
 </style>
 </head>
 <body>
 
-<div class="header" id="header">
+<div class="header">
   <h1>Image Resolution Toolkit</h1>
+
   <div id="dropArea" class="drop-area">
-    <p>Drag & Drop Images Here</p><span>or click to browse</span>
+    <p><strong>Drag & Drop Images Here</strong></p>
+    <span>or click to browse</span>
     <input type="file" id="imageInput" multiple accept="image/*" hidden>
   </div>
+
   <button id="downloadZipBtn">Download Renamed Images</button>
+
   <div class="resolution-settings">
     <strong>Min Resolution:</strong>
-    <input type="number" id="minWidth" value="380"> ×
-    <input type="number" id="minHeight" value="380">
+    <input type="number" id="minWidth" value="380" style="width:60px;"> ×
+    <input type="number" id="minHeight" value="380" style="width:60px;">
   </div>
-  <div class="image-counter" id="imageCounter">
-    Total Images: <span class="total">0</span> | Images below min resolution: <span class="small">0</span>
+
+  <div class="image-counter">
+    Total Images: <span class="total">0</span> |
+    Images below min resolution: <span class="small">0</span>
     <button id="fixAllBtn" disabled>Fix Resolution</button>
   </div>
+
   <div class="progress-container" id="progressContainer">
     <div class="progress-bar" id="progressBar"></div>
   </div>
-  <div class="progress-text" id="progressText"></div>
 </div>
 
 <div class="container">
   <div class="grid" id="imageGrid"></div>
 </div>
 
-<button id="backToTop">
-  <span class="arrow">↑</span>
-  <span class="text">BACK TO TOP</span>
-</button>
-
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <h3>Resolution Warning ⚠️</h3>
-    <p id="modalText"></p>
-    <button onclick="closeModal()">OK</button>
-  </div>
-</div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+
 <script>
-const header=document.getElementById("header");
-const dropArea=document.getElementById("dropArea");
-const input=document.getElementById("imageInput");
-const grid=document.getElementById("imageGrid");
-const downloadButton=document.getElementById("downloadZipBtn");
-const progressBar=document.getElementById("progressBar");
-const progressContainer=document.getElementById("progressContainer");
-const progressText=document.getElementById("progressText");
-const minWidthInput=document.getElementById("minWidth");
-const minHeightInput=document.getElementById("minHeight");
-const modalOverlay=document.getElementById("modalOverlay");
-const modalText=document.getElementById("modalText");
-const backToTop=document.getElementById("backToTop");
-const imageCounter=document.getElementById("imageCounter");
-const fixAllBtn=document.getElementById("fixAllBtn");
+const input = document.getElementById("imageInput");
+const dropArea = document.getElementById("dropArea");
+const grid = document.getElementById("imageGrid");
+const downloadButton = document.getElementById("downloadZipBtn");
+const minWidthInput = document.getElementById("minWidth");
+const minHeightInput = document.getElementById("minHeight");
+const progressBar = document.getElementById("progressBar");
+const progressContainer = document.getElementById("progressContainer");
+const fixAllBtn = document.getElementById("fixAllBtn");
 
-let currentFiles=[];
+let currentFiles = [];
 
-window.addEventListener("scroll",()=>{ 
-  if(window.scrollY>50){header.classList.add("shrink"); backToTop.style.display="block";}
-  else{header.classList.remove("shrink"); backToTop.style.display="none";} 
+dropArea.addEventListener("click", () => input.click());
+
+input.addEventListener("change", e => {
+  currentFiles = [...e.target.files];
+  processFiles(currentFiles);
 });
-backToTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-function closeModal(){ modalOverlay.style.display="none"; }
 
-// Drag anywhere
-document.addEventListener("dragover", e=>{ e.preventDefault(); });
-document.addEventListener("drop", e=>{ e.preventDefault(); if(e.target===document.body || e.target===document.documentElement){ currentFiles=[...e.dataTransfer.files]; processFiles(currentFiles); } });
+function processFiles(files) {
+  grid.innerHTML = "";
+  downloadButton.style.display = "none";
 
-dropArea.addEventListener("click",()=>input.click());
-dropArea.addEventListener("dragover",e=>{e.preventDefault(); dropArea.classList.add("dragover");});
-dropArea.addEventListener("dragleave",()=>dropArea.classList.remove("dragover"));
-dropArea.addEventListener("drop",e=>{e.preventDefault(); dropArea.classList.remove("dragover"); currentFiles=[...e.dataTransfer.files]; processFiles(currentFiles);});
-input.addEventListener("change",e=>{currentFiles=[...e.target.files]; processFiles(currentFiles);});
+  const minW = parseInt(minWidthInput.value) || 0;
+  const minH = parseInt(minHeightInput.value) || 0;
 
-function processFiles(files){
-  grid.innerHTML="";
-  downloadButton.style.display="none";
-  fixAllBtn.disabled = true;
-  const minW=parseInt(minWidthInput.value)||0;
-  const minH=parseInt(minHeightInput.value)||0;
-  if(!files.length){ 
-    document.querySelector(".total").textContent = 0;
-    document.querySelector(".small").textContent = 0;
-    return; 
-  }
+  let smallCount = 0;
+  let loaded = 0;
 
-  let index=0, smallCount=0, loadedCount=0;
-  
-  function loadNext(){
-    if(index>=files.length){
-      document.querySelector(".total").textContent = loadedCount;
-      document.querySelector(".small").textContent = smallCount;
-      downloadButton.style.display="inline-block";
-      fixAllBtn.disabled = smallCount === 0;
-      if(smallCount>0){
-        modalText.textContent=`${smallCount} image${smallCount>1?'s are':' is'} below ${minW} × ${minH} resolution.`;
-        modalOverlay.style.display="flex";
-      }
-      return;
-    }
+  files.forEach(file => {
+    const reader = new FileReader();
 
-    const file=files[index];
-    const reader=new FileReader();
-    reader.onload=function(e){
-      const img=new Image();
-      img.onload=function(){
-        const tooSmall=img.width<minW||img.height<minH;
-        const card=document.createElement("div");
-        card.className="image-card";
-        card.dataset.tooSmall=tooSmall?"1":"0";
-        card.dataset.originalSrc=e.target.result;
-        card.draggable = true;
+    reader.onload = e => {
+      const img = new Image();
 
-        // Create thumbnail for display
-        const canvas=document.createElement("canvas");
-        const maxThumb=150;
-        let ratio=Math.min(maxThumb/img.width, maxThumb/img.height,1);
-        canvas.width=Math.round(img.width*ratio);
-        canvas.height=Math.round(img.height*ratio);
-        canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
-        const thumbSrc=canvas.toDataURL("image/png");
+      img.onload = () => {
+        const tooSmall = img.width < minW || img.height < minH;
+        if (tooSmall) smallCount++;
 
-        card.innerHTML=`<img src="${thumbSrc}">
-          <div class="image-name" title="${file.name}">${file.name}</div>
-          <div class="image-info" style="color:${tooSmall?"#d9534f":"#333"}">${img.width} × ${img.height}px</div>`;
+        const card = document.createElement("div");
+        card.className = "image-card";
 
-        // Move to End Button
-        const moveBtn = document.createElement("button");
-        moveBtn.className = "move-end-btn";
-        moveBtn.textContent = "↘";
-        moveBtn.title = "Move to End";
-        moveBtn.addEventListener("click", () => { grid.appendChild(card); });
-        card.appendChild(moveBtn);
+        // Store FULL original resolution
+        card.dataset.originalSrc = e.target.result;
 
-        // Drag & Drop reordering
-        card.addEventListener("dragstart", (ev) => { card.classList.add("dragging"); ev.dataTransfer.setData("text/plain", ""); });
-        card.addEventListener("dragend", () => { card.classList.remove("dragging"); });
-        card.addEventListener("dragover", (ev) => { 
-          ev.preventDefault(); 
-          const dragging = document.querySelector(".dragging");
-          if(dragging && dragging!==card){ 
-            card.classList.add("dragging-over"); 
-            grid.insertBefore(dragging, card.nextSibling); 
-          } 
-        });
-        card.addEventListener("dragleave",()=>card.classList.remove("dragging-over"));
-        card.addEventListener("drop",()=>card.classList.remove("dragging-over"));
+        // Create thumbnail for display only
+        const canvas = document.createElement("canvas");
+        const ratio = Math.min(150 / img.width, 150 / img.height, 1);
+        canvas.width = Math.round(img.width * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        card.innerHTML = `
+          <img src="${canvas.toDataURL("image/png")}">
+          <div class="image-name">${file.name}</div>
+          <div class="image-info" style="color:${tooSmall ? '#d9534f' : '#333'}">
+            ${img.width} × ${img.height}px
+          </div>
+        `;
 
         grid.appendChild(card);
 
-        if(tooSmall) smallCount++;
-        loadedCount++;
-        document.querySelector(".total").textContent = loadedCount;
+        loaded++;
+        document.querySelector(".total").textContent = loaded;
         document.querySelector(".small").textContent = smallCount;
         fixAllBtn.disabled = smallCount === 0;
-        index++; loadNext();
+        downloadButton.style.display = "inline-block";
       };
-      img.onerror=function(){ index++; loadNext(); };
-      img.src=e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
 
-  loadNext();
+      img.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
 }
 
-// Fix all low-resolution images
+// Fix low resolution images
 fixAllBtn.addEventListener("click", () => {
   const minW = parseInt(minWidthInput.value) || 0;
   const minH = parseInt(minHeightInput.value) || 0;
-  const lowImages = [...document.querySelectorAll(".image-card")].filter(c => c.dataset.tooSmall === "1");
 
-  lowImages.forEach(card => {
+  document.querySelectorAll(".image-card").forEach(card => {
     const img = new Image();
     img.src = card.dataset.originalSrc;
-    img.onload = function () {
-      const ratio = Math.max(minW / img.width, minH / img.height, 1);
-      const canvas = document.createElement("canvas");
-      canvas.width = Math.round(img.width * ratio);
-      canvas.height = Math.round(img.height * ratio);
-      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-      const newSrc = canvas.toDataURL("image/png");
 
-      const imgEl = card.querySelector("img");
-      const infoEl = card.querySelector(".image-info");
-      imgEl.src = newSrc;
-      infoEl.textContent = `${canvas.width} × ${canvas.height}px`;
-      infoEl.style.color = "#28a745"; // permanent green
-      card.dataset.tooSmall = "0";
+    img.onload = () => {
+      const ratio = Math.max(minW / img.width, minH / img.height, 1);
+
+      if (ratio > 1) {
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Replace FULL resolution with fixed version
+        card.dataset.originalSrc = canvas.toDataURL("image/png");
+
+        card.querySelector(".image-info").textContent =
+          `${canvas.width} × ${canvas.height}px`;
+        card.querySelector(".image-info").style.color = "#28a745";
+      }
     };
   });
 
-  fixAllBtn.disabled = true;
   document.querySelector(".small").textContent = 0;
+  fixAllBtn.disabled = true;
 });
 
-// ZIP Download
-downloadButton.addEventListener("click",async()=>{
-  if(!currentFiles.length) return;
-  downloadButton.disabled=true;
-  progressContainer.style.display="block"; progressBar.style.width="0%"; progressText.textContent="Preparing ZIP... 0%";
-  const zip=new JSZip();
-  const images=document.querySelectorAll(".image-card img");
-  for(let i=0;i<images.length;i++){
-    const dataUrl=images[i].src;
-    const res=await fetch(dataUrl); const blob=await res.blob();
-    zip.file(`${i+1}`,blob);
+// Download ZIP WITHOUT extensions
+downloadButton.addEventListener("click", async () => {
+  if (!currentFiles.length) return;
+
+  downloadButton.disabled = true;
+  progressContainer.style.display = "block";
+
+  const zip = new JSZip();
+  const cards = document.querySelectorAll(".image-card");
+
+  for (let i = 0; i < cards.length; i++) {
+    const dataUrl = cards[i].dataset.originalSrc;
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+
+    // NO EXTENSION
+    zip.file(`${i + 1}`, blob);
+
+    progressBar.style.width = ((i + 1) / cards.length * 100) + "%";
   }
-  zip.generateAsync({type:"blob"},metadata=>{progressBar.style.width=metadata.percent.toFixed(0)+"%"; progressText.textContent=`Preparing ZIP... ${metadata.percent.toFixed(0)}%`;})
-    .then(content=>{const link=document.createElement('a'); link.href=URL.createObjectURL(content); link.download="images_renamed.zip"; link.click(); downloadButton.disabled=false; progressText.textContent="Download Ready!"; setTimeout(()=>{progressContainer.style.display="none"; progressText.textContent="";},1500);});
+
+  const content = await zip.generateAsync({ type: "blob" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(content);
+  link.download = "images_renamed.zip";
+  link.click();
+
+  downloadButton.disabled = false;
+  progressContainer.style.display = "none";
+  progressBar.style.width = "0%";
 });
 </script>
+
 </body>
 </html>
-
-
